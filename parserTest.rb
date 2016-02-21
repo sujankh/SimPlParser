@@ -26,6 +26,46 @@ class TestParser < Test::Unit::TestCase
     lex("id = ( int + int")
     assert_raise(ParseError){parseAssignStatement()}
   end
+
+  def test_addop1
+    lex("int * int + int")
+    assert_nothing_raised(ParseError){parseAddOp()}
+  end
+
+  def test_addop2
+    lex("int / int + id")
+    assert_nothing_raised(ParseError){parseAddOp()}
+  end
+
+  def test_addop3
+    lex("int + ")
+    assert_raise(ParseError){parseAddOp()}
+  end
+
+  def test_addop4
+    lex("int")
+    assert_nothing_raised(ParseError){parseAddOp()}
+  end
+
+  def test_addop5
+    lex("id")
+    assert_nothing_raised(ParseError){parseAddOp()}
+  end
+
+  def test_mulop1
+    lex("int * int / ( int + int )")
+    assert_nothing_raised(ParseError){parseAddOp()}
+  end
+
+  def test_mulop2
+    lex("id * id / ( id + id )")
+    assert_nothing_raised(ParseError){parseAddOp()}
+  end
+
+  def test_mulop2
+    lex("id * / ( id + id )")
+    assert_raise(ParseError){parseAddOp()}
+  end
   
   def test_parseFactor1
     lex("int")
