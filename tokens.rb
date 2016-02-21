@@ -17,3 +17,23 @@ class Token
   T_LEFT_PAREN = 15
   T_RIGHT_PAREN = 16
 end
+
+$keywords = {
+  "eof" => Token::T_EOF,
+  ";" => Token::T_SEMICOLON,
+  "id" => Token::T_IDENT,
+  "=" => Token::T_EQUAL,
+  "if" => Token::T_IF,
+  "then" => Token::T_THEN,
+  "else" => Token::T_ELSE,
+  "while" => Token::T_WHILE,
+  "do" => Token::T_DO,
+  "end" => Token::T_END,
+  "+" => Token::T_PLUS,
+  "-" => Token::T_MINUS,
+  "*" => Token::T_MULT,
+  "/" => Token::T_DIVIDE,
+  "int" => Token::T_INTEGER,
+  "(" => Token::T_LEFT_PAREN,
+  ")" =>Token::T_RIGHT_PAREN
+}

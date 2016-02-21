@@ -1,19 +1,16 @@
 #!/usr/bin/ruby
 
 require './parser.rb'
-require './tokens.rb'
+require './dumblexer.rb'
 
-
-#id = int ;
-$tokens =
-  [
-    Token::T_IDENT, Token::T_EQUAL, Token::T_INTEGER, Token::T_SEMICOLON,
-    Token::T_EOF
-  ]
-
-# $tokens =
-#   [
-    
-#   ]
-
+lex("id = int ; eof")
 beginParse()
+
+#Test parseAssignStatement
+
+lex("id = ( int + int )")
+parseAssignStatement()
+
+lex("id = int + int")
+parseAssignStatement()
+
