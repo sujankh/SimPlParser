@@ -1,5 +1,6 @@
 #getTokenKind - returns symbol for next seqToken
 require './tokens.rb'
+require './parseError.rb'
 
 #peek at the next token
 def getTokenKind()
@@ -16,22 +17,27 @@ def nextToken()
   #print $tokens
 end
 
+def parseProgram()
+  begin
+    beginParse()
+    puts "Successful parse."
+  rescue ParseError => e
+    puts "Syntax error:"
+    puts e.message
+    #puts e.backtrace.inspect
+  end
+end
+
 def beginParse()
-begin
   loop do
     parseStatements()    
+
     if getTokenKind == Token::T_EOF      
       puts "End of file"
       nextToken() #consume EOF
       break
     end
   end
-  puts "Successful parsing"
-rescue Exception => e
-  puts "Syntax error:"
-  puts e.message
-  #puts e.backtrace.inspect
-end
 end
 
 def parseStatements()
@@ -113,8 +119,7 @@ def parse_error_value(message)
 end
 
 def parse_error(message)
-  puts message
-  raise message
+  raise ParseError, message
 end
   
 #beginParse()
