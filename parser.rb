@@ -6,6 +6,10 @@ def getTokenKind()
   $tokens.at(0)
 end
 
+def getTokenText()
+  $tokens.at(0)
+end
+
 #consume token
 def nextToken()
   $tokens.shift
@@ -23,15 +27,17 @@ begin
     end
   end
   puts "Successful parsing"
-rescue
-  puts "Syntax error"
+rescue Exception => e
+  puts "Syntax error:"
+  puts e.message
+  #puts e.backtrace.inspect
 end
 end
 
 def parseStatements()
   parseStatement()
   if getTokenKind != Token::T_SEMICOLON
-    parse_error("Statement should end with semi-colon")
+    parse_error_value("Statement should end with semi-colon")
   end
   nextToken() #consume the semicolon
 end
@@ -43,7 +49,7 @@ def parseStatement()
     parseIfStatement()
   elsif getTokenKind == Token::T_WHILE
   else
-    parse_error("A statement begins with IDENTIFIER, IF or WHILE")
+    parse_error_value("A statement begins with IDENTIFIER, IF or WHILE")
   end
 end
 
@@ -51,7 +57,7 @@ def parseAssignStatement()
   parseIdentifier()
 
   if getTokenKind != Token::T_EQUAL
-    parse_error("Identifier should be followed by a equals sign")
+    parse_error_value("Identifier should be followed by a equals sign")
   end
   nextToken() #Consume the T_EQUAL token
     
@@ -62,7 +68,7 @@ def parseIdentifier()
   if getTokenKind == Token::T_IDENT
     nextToken() #consume the identifier
   else
-    parse_error("Invalid value for an identifier")
+    parse_error_value("Invalid value for an identifier")
   end
 end
 
@@ -90,17 +96,24 @@ def parseFactor()
     nextToken() #consume (
     parseAddOp()
 
-    if nextToken != T_RIGHT_PAREN
-      parse_error("Parenthesis do not match")
+    if nextToken != Token::T_RIGHT_PAREN
+      parse_error_value("Expected a parenthesis.")
     end
 
     nextToken() #consume )
   else
-    parse_error("Invalid value for a factor")
+    parse_error_value("Invalid value for a factor")
   end
 end
 
+def parse_error_value(message)
+  message = message + "\nUnexpected Value: " + "%s" % getTokenText()
+
+  parse_error(message)
+end
+
 def parse_error(message)
+  puts message
   raise message
 end
   
