@@ -93,5 +93,57 @@ class TestParser < Test::Unit::TestCase
        ")
     assert_nothing_raised(ParseError){parseIfStatement()}
   end
+
+  def test_if2
+    lex(
+      "if true then
+         if false then 
+           id = int ;
+         else
+           id = int - int ;
+         end ;
+       else 
+         id = int - int ;
+       end
+       ")
+    assert_nothing_raised(ParseError){parseIfStatement()}
+  end
+
+  #should have ; and eof
+  def test_ifStatement
+    lex(
+      "if true then
+         if false then 
+           id = int ;
+         else
+           id = int - int ;
+         end ;
+       else 
+         id = int - int ;
+       end ; eof
+       ")
+    assert_nothing_raised(ParseError){parseStatements()}
+  end
+
   
+  def test_parseStatements
+    lex("
+id = int ;
+if false then id = int / int ; else id = int ; end ;
+id = id / id ;
+eof
+")
+    assert_nothing_raised(ParseError){parseStatements()}
+  end
+
+
+  def test_parseStatements1
+    lex("
+id = int ;
+if false then id = int / int ; else id = int ; end ;
+id = id / id 
+eof
+")
+    assert_raise(ParseError){parseStatements()}
+  end
 end
