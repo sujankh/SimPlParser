@@ -19,7 +19,8 @@ end
 
 def parseProgram()
   begin
-    beginParse()
+    parseStatements()
+    
     puts "Successful parse."
   rescue ParseError => e
     puts "Syntax error:"
@@ -28,24 +29,21 @@ def parseProgram()
   end
 end
 
-def beginParse()
-  loop do
-    parseStatements()    
-
-    if getTokenKind == Token::T_EOF      
-      puts "End of file"
-      nextToken() #consume EOF
-      break
-    end
-  end
-end
-
 def parseStatements()
   parseStatement()
-  if getTokenKind != Token::T_SEMICOLON
-    parse_error_value("Statement should end with semi-colon")
+  check(Token::T_SEMICOLON, "Statement should end with semi-colon")
+
+  if getTokenKind == Token::T_EOF      
+    puts "End of file"
+    nextToken() #consume EOF
+    return; #done with parsing
   end
-  nextToken() #consume the semicolon
+
+  if getTokenKind == Token::T_ELSE or getTokenKind == Token::T_END
+    return
+  end
+  
+  parseStatements()
 end
 
 def parseStatement()
@@ -61,13 +59,33 @@ end
 
 def parseAssignStatement()
   parseIdentifier()
-
-  if getTokenKind != Token::T_EQUAL
-    parse_error_value("Identifier should be followed by a equals sign")
-  end
-  nextToken() #Consume the T_EQUAL token
-    
+  check(Token::T_EQUAL, "Identifier should be followed by a equals sign")
   parseAddOp()
+end
+
+def parseIfStatement()
+  check(Token::T_IF, "Expected IF")
+  parseLexpr()
+  check(Token::T_THEN, "Expected THEN")
+  parseStatements()
+  check(Token::T_ELSE, "Expected ELSE")
+  parseStatements()
+  check(Token::T_END, "Expected END")
+end
+
+def parseLexpr()
+  parseLterm() #todo
+end
+
+def parseLterm()
+  parseLfactor() #todo
+end
+
+#todo
+def parseLfactor()
+  if getTokenKind == Token::T_TRUE || getTokenKind == Token::T_FALSE
+    nextToken()
+  end
 end
 
 def parseIdentifier()
@@ -122,4 +140,9 @@ def parse_error(message)
   raise ParseError, message
 end
   
-#beginParse()
+def check(token, message)
+  if getTokenKind != token
+    parse_error_value(message)
+  end
+  nextToken() #consume the token
+end

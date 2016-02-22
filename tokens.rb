@@ -16,6 +16,8 @@ class Token
   T_INTEGER = 14
   T_LEFT_PAREN = 15
   T_RIGHT_PAREN = 16
+  T_TRUE = 17
+  T_FALSE = 18
 end
 
 $keywords = {
@@ -35,5 +37,7 @@ $keywords = {
   "/" => Token::T_DIVIDE,
   "int" => Token::T_INTEGER,
   "(" => Token::T_LEFT_PAREN,
-  ")" =>Token::T_RIGHT_PAREN
+  ")" =>Token::T_RIGHT_PAREN,
+  "true" => Token::T_TRUE,
+  "false" => Token::T_FALSE
 }

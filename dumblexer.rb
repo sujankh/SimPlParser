@@ -4,7 +4,7 @@ require './tokens.rb'
 #stores the tokens in a $tokens global variable
 def lex(programText)
   #replace all line endings by a space
-  programText = programText.gsub("\n", " ")
+  programText = programText.gsub("\n", " ").downcase
   programTextArray = programText.split(" ")
 
   #return an array of Token s

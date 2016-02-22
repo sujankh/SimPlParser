@@ -8,8 +8,8 @@ require "test/unit"
 class TestParser < Test::Unit::TestCase
 
   def test_beginParse
-  lex("id = int ; eof")
-  assert_nothing_raised(ParseError){beginParse()}
+  lex("id = int ; id = int - int ; eof")
+  assert_nothing_raised(ParseError){parseStatements()}
   end
 
   def test_Assign1
@@ -81,4 +81,17 @@ class TestParser < Test::Unit::TestCase
     lex("int + int")
     assert_nothing_raised(ParseError){parseFactor()}
   end
+
+  def test_if1
+    lex(
+      "if true then 
+         id = int ; 
+         id = int + int ; 
+       else 
+         id = int - int ;
+       end
+       ")
+    assert_nothing_raised(ParseError){parseIfStatement()}
+  end
+  
 end
