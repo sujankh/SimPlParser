@@ -89,11 +89,7 @@ def parseLfactor()
 end
 
 def parseIdentifier()
-  if getTokenKind == Token::T_IDENT
-    nextToken() #consume the identifier
-  else
-    parse_error_value("Invalid value for an identifier")
-  end
+  check(Token::T_IDENT, "Invalid value for an identifier")
 end
 
 def parseAddOp()
@@ -119,12 +115,7 @@ def parseFactor()
   elsif getTokenKind == Token::T_LEFT_PAREN
     nextToken() #consume (
     parseAddOp()
-
-    if nextToken != Token::T_RIGHT_PAREN
-      parse_error_value("Expected a parenthesis.")
-    end
-
-    nextToken() #consume )
+    check(Token::T_RIGHT_PAREN, "Expected a parenthesis.")
   else
     parse_error_value("Invalid value for a factor")
   end
