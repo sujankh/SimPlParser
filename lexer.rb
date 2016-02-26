@@ -165,7 +165,6 @@ class Tokenizer
 	  curr_state = Token::T_IDENT
 	end
 	createTok(curr_state, temp)
-        puts temp
       end
     end
   end
