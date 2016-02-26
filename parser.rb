@@ -20,7 +20,9 @@ end
 def parseProgram()
   begin
     parseStatements()
-    
+
+    nextToken() #consume EOF
+    puts "End Of File"
     puts "Successful parse."
   rescue ParseError => e
     puts "Syntax error:"
@@ -29,21 +31,22 @@ def parseProgram()
   end
 end
 
-def parseStatements()
+# <stmts> ::= <stmt> ;
+# 	| <stmt> ; <stmts>
+
+#Continue parsing statements until an endToken is found
+#by default the endToken is EOF
+
+def parseStatements(endToken = Token::T_EOF)
   parseStatement()
   check(Token::T_SEMICOLON, "Statement should end with semi-colon")
 
-  if getTokenKind == Token::T_EOF      
-    puts "End of file"
-    nextToken() #consume EOF
-    return; #done with parsing
-  end
-
-  if getTokenKind == Token::T_ELSE or getTokenKind == Token::T_END
+  #This will loop until we reach the end of the block
+  if getTokenKind == endToken
     return
   end
   
-  parseStatements()
+  parseStatements(endToken)
 end
 
 def parseStatement()
@@ -52,6 +55,7 @@ def parseStatement()
   elsif getTokenKind == Token::T_IF
     parseIfStatement()
   elsif getTokenKind == Token::T_WHILE
+    parseWhileLoop()
   else
     parse_error_value("A statement begins with IDENTIFIER, IF or WHILE")
   end
@@ -63,14 +67,24 @@ def parseAssignStatement()
   parseAddOp()
 end
 
+#if <lexpr> then <stmts> else <stmts> end
 def parseIfStatement()
   check(Token::T_IF, "Expected IF")
   parseLexpr()
   check(Token::T_THEN, "Expected THEN")
-  parseStatements()
+  parseStatements(Token::T_ELSE)
   check(Token::T_ELSE, "Expected ELSE")
-  parseStatements()
+  parseStatements(Token::T_END)
   check(Token::T_END, "Expected END")
+end
+
+#while <lexpr> do <stmts> end
+def parseWhileLoop()
+  check(Token::T_WHILE, "Expected WHILE")
+  parseLexpr()
+  check(Token::T_DO, "Expected DO after lexpr")
+  parseStatements(Token::T_END)
+  check(Token::T_END, "Expected END at the end of while loop")
 end
 
 # <lexpr>::= <lterm> and <lexpr>

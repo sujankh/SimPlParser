@@ -62,7 +62,7 @@ class TestParser < Test::Unit::TestCase
     assert_nothing_raised(ParseError){parseAddOp()}
   end
 
-  def test_mulop2
+  def test_mulop3
     lex("id * / ( id + id )")
     assert_raise(ParseError){parseAddOp()}
   end
@@ -198,5 +198,32 @@ eof
     lex("not id  = ( int + id )")
     assert_nothing_raised(ParseError){parseLexpr()}
   end
-  #------------------LEXPR TESTS END----------------------------#  
+  #------------------LEXPR TESTS END----------------------------#
+
+
+  #---------------WHILE LOOP TESTS--------------------#
+
+  def test_while_1
+    lex("while id < id do
+id := id + id ;
+id := id ;
+id := id + int ;
+end
+");
+
+    assert_nothing_raised(ParseError){parseWhileLoop()}
+  end
+
+
+  def test_while_negative
+    lex("while id < id
+id := id + id ;
+id := id ;
+id := id + int ;
+end
+");
+    assert_raise(ParseError){parseWhileLoop()}
+  end
+
+  #---------------WHILE LOOP TESTS--------------------#
 end
