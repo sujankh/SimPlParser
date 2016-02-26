@@ -1,25 +1,26 @@
 #!/usr/bin/ruby
 
-#require_relative './lexer'
+require_relative './lexer'
 require_relative './parser'
 
-#TODO: create Tokenizer object
-
 def getTokenKind()
-  #TODO: call tokenizer method
+  $tokenizer.getTokenKind()
 end
 
 def getTokenText()
-  #TODO: call tokenizer method
+  $tokenizer.getTokenText()
 end
 
 #consume token
 def nextToken()
-  #TODO: call tokenizer method
+  $tokenizer.nextToken()
 end
 
 def parseProgram()
   begin
+    $tokenizer.readFile("simpl1.txt")
+    nextToken()
+    
     parseStatements()
 
     nextToken() #consume EOF
@@ -32,4 +33,5 @@ def parseProgram()
 end
 
 #start parser program
+$tokenizer = Tokenizer.new
 parseProgram()
