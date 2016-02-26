@@ -65,7 +65,6 @@ class Tokenizer
 				newChar = @fileBuf.at(@seek_ptr)
         @seek_ptr = @seek_ptr + 1
       end
-
 			# check if first char is letter, number or a symbol
 			if newChar =~ /[A-Za-z]/
 				curr_state = Token::T_IDENT
@@ -107,7 +106,7 @@ class Tokenizer
 					createTok(curr_state, newChar)
 				else
 					if curr_state == -1
-					  parse_error_value("Unidentified symbol, quitting" + newChar)
+					  parse_error_value("Unidentified symbol, quitting" + newChar, newChar)
           end
 				end
 			# if it is a number or integer value
@@ -132,7 +131,7 @@ class Tokenizer
             newChar = @fileBuf.at(@seek_ptr)
             @seek_ptr = @seek_ptr + 1
           else
-            puts newChar
+            @seek_ptr = @seek_ptr - 1
             break
           end
         end
@@ -166,8 +165,8 @@ class Tokenizer
 	end
 	
 	
-	def parse_error_value(message)
-		message = message + "\nUnexpected Value: " + "%s" % getTokenText()
+	def parse_error_value(message, newChar)
+		message = message + "\nUnexpected Value: " + "%s" % newChar
 
 		parse_error(message)
 	end
