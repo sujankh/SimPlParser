@@ -7,7 +7,49 @@ require "test/unit"
 
 class TestParser < Test::Unit::TestCase
 
-  def test_beginParse
+  def test_parseProgram
+    lex("
+id := int ;
+id := int ;
+id := int ;
+
+while id < id do
+id := id + int ;
+id := id + id ;
+end ; eof
+")
+
+    parseProgram()    
+  end
+
+  def test_invalidProgram
+    lex("
+while id - do
+ id = int ;
+end
+")
+    assert_raise(ParseError){parseStatements()}    
+  end
+
+  def test_allStatements
+    lex("
+id := int + int - ( int + id ) ;
+if not true and id <= int then
+   while id < int do
+     if true and false then
+       id := int * int ;
+     else
+       id := ( int + int ) - id ;
+     end ;
+   end ;
+else
+   id := id ;
+end ; eof
+")
+    assert_nothing_raised(ParseError){parseStatements()}        
+  end
+  
+  def test_parseStatements
   lex("id := int ; id := int - int ; eof")
   assert_nothing_raised(ParseError){parseStatements()}
   end
@@ -126,7 +168,7 @@ class TestParser < Test::Unit::TestCase
   end
 
   
-  def test_parseStatements
+  def test_parseStatements1
     lex("
 id := int ;
 if false then id := int / int ; else id := int ; end ;
@@ -137,7 +179,7 @@ eof
   end
 
    #no semi colons
-  def test_parseStatements1
+  def test_parseStatements2
     lex("
 id := int ;
 if false then id := int / int ; else id := int ; end ;
