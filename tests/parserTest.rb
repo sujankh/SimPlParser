@@ -267,12 +267,18 @@ id := id + id ;
 id := id ;
 id := id + int ;
 end
-");
+")
 
     assert_nothing_raised(ParseError){parseWhileLoop()}
   end
 
+  def test_anotherWhile
+    lex("while ( int + int ) < id and not id = id do  id := id + int ; end ;")
 
+    assert_nothing_raised(ParseError){parseWhileLoop()}
+  end
+
+  
   def test_while_negative
     lex("while id < id
 id := id + id ;
