@@ -73,20 +73,51 @@ def parseIfStatement()
   check(Token::T_END, "Expected END")
 end
 
+# <lexpr>::= <lterm> and <lexpr>
+#            | <lterm>
 def parseLexpr()
-  parseLterm() #todo
-end
+  parseLterm()
 
-def parseLterm()
-  parseLfactor() #todo
-end
-
-#todo
-def parseLfactor()
-  if getTokenKind == Token::T_BOOLEAN # || getTokenKind == Token::T_FALSE
-    nextToken()
+  if getTokenKind == Token::T_AND
+    nextToken() #consume and
+    
+    parseLexpr()
   end
 end
+
+# <lterm> ::= not <lfactor>
+#          | <lfactor>
+def parseLterm()
+  
+  #accept the not keyword
+  if getTokenKind == Token::T_NOT
+    nextToken()
+  end
+  
+  parseLfactor()
+end
+
+# <lfactor>:= true
+#            | false
+# 	     | <relop>
+def parseLfactor()
+  if getTokenKind == Token::T_BOOLEAN
+    nextToken()
+  else    
+    parseRelOp()
+  end
+end
+
+# <relop> ::= <addop> <= <addop>
+#          | <addop> < <addop>
+#          | <addop> = <addop>
+def parseRelOp()
+  parseAddOp()
+  #now check if the next token is <=, < or =
+  check(Token::T_RELOP, "Expected a relational operator")
+  parseAddOp()
+end
+
 
 def parseIdentifier()
   check(Token::T_IDENT, "Invalid value for an identifier")
@@ -109,6 +140,9 @@ def parseMulOp()
   end  
 end
 
+# <factor> ::= integer
+# 	| identifier
+# 	| ( <addop> )
 def parseFactor()
   if getTokenKind == Token::T_INTEGER || getTokenKind == Token::T_IDENT
     nextToken()

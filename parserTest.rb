@@ -146,4 +146,57 @@ eof
 ")
     assert_raise(ParseError){parseStatements()}
   end
+
+  #------------------LEXPR TEST----------------------------#
+
+  def test_parseLexpr_true
+    lex("true");
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+
+  def test_parseLexpr_false
+    lex("false");
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+
+  def test_parseLexpr_trueandfalse
+    lex("true and false");
+    
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+
+  def test_parseLexpr_nottrueandfalse
+    lex("not true and false");
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+
+  def test_parseLexpr_manycases
+    lex("not true and true and false and id <= int and int < id and not int = int and not id = id");
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+  
+  def test_relop_le
+    lex("( int - int ) <= ( int + id )")
+    assert_nothing_raised(ParseError){parseRelOp()}
+
+    lex("( int - int ) <= ( int + id )")
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+
+  def test_relop_lt
+    lex("( int - int ) < int + id - int * id / int")
+    assert_nothing_raised(ParseError){parseRelOp()}
+
+    lex("( int - int ) < int + id - int * id / int")
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+
+  def test_relop_eq
+    lex("id  = ( int + id )")
+    assert_nothing_raised(ParseError){parseRelOp()}
+
+    lex("not id  = ( int + id )")
+    assert_nothing_raised(ParseError){parseLexpr()}
+  end
+  #------------------LEXPR TESTS END----------------------------#  
 end

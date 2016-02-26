@@ -42,5 +42,7 @@ $keywords = {
   ")" =>Token::T_RIGHT_PAREN,
   "true" => Token::T_BOOLEAN,
   "false" => Token::T_BOOLEAN,
-  ":=" => Token::T_ASN
+  ":=" => Token::T_ASN,
+  "not" => Token::T_NOT,
+  "and" => Token::T_AND
 }
