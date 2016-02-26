@@ -16,7 +16,8 @@ class Token
   T_INTEGER = 14
   T_LEFT_PAREN = 15
   T_RIGHT_PAREN = 16
-  T_BOOLEAN = 17  
+  T_BOOLEAN = 17
+  T_AND = 18
 end
 
 $keywords = {
