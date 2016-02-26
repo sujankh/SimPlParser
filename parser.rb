@@ -1,49 +1,23 @@
 #getTokenKind - returns symbol for next seqToken
-require './tokens.rb'
-require './parseError.rb'
+require_relative './tokens'
+require_relative './parseError'
 
-#peek at the next token
-def getTokenKind()
-  $tokens.at(0)
-end
+# <stmts> ::= <stmt> ;
+# 	| <stmt> ; <stmts>
 
-def getTokenText()
-  $tokens.at(0)
-end
+#Continue parsing statements until an endToken is found
+#by default the endToken is EOF
 
-#consume token
-def nextToken()
-  $tokens.shift
-  #print $tokens
-end
-
-def parseProgram()
-  begin
-    parseStatements()
-    
-    puts "Successful parse."
-  rescue ParseError => e
-    puts "Syntax error:"
-    puts e.message
-    #puts e.backtrace.inspect
-  end
-end
-
-def parseStatements()
+def parseStatements(endToken = Token::T_EOF)
   parseStatement()
   check(Token::T_SEMICOLON, "Statement should end with semi-colon")
 
-  if getTokenKind == Token::T_EOF      
-    puts "End of file"
-    nextToken() #consume EOF
-    return; #done with parsing
-  end
-
-  if getTokenKind == Token::T_ELSE or getTokenKind == Token::T_END
+  #This will loop until we reach the end of the block
+  if getTokenKind == endToken
     return
   end
   
-  parseStatements()
+  parseStatements(endToken)
 end
 
 def parseStatement()
@@ -52,6 +26,7 @@ def parseStatement()
   elsif getTokenKind == Token::T_IF
     parseIfStatement()
   elsif getTokenKind == Token::T_WHILE
+    parseWhileLoop()
   else
     parse_error_value("A statement begins with IDENTIFIER, IF or WHILE")
   end
@@ -63,30 +38,71 @@ def parseAssignStatement()
   parseAddOp()
 end
 
+#if <lexpr> then <stmts> else <stmts> end
 def parseIfStatement()
   check(Token::T_IF, "Expected IF")
   parseLexpr()
   check(Token::T_THEN, "Expected THEN")
-  parseStatements()
+  parseStatements(Token::T_ELSE)
   check(Token::T_ELSE, "Expected ELSE")
-  parseStatements()
+  parseStatements(Token::T_END)
   check(Token::T_END, "Expected END")
 end
 
+#while <lexpr> do <stmts> end
+def parseWhileLoop()
+  check(Token::T_WHILE, "Expected WHILE")
+  parseLexpr()
+  check(Token::T_DO, "Expected DO after lexpr")
+  parseStatements(Token::T_END)
+  check(Token::T_END, "Expected END at the end of while loop")
+end
+
+# <lexpr>::= <lterm> and <lexpr>
+#            | <lterm>
 def parseLexpr()
-  parseLterm() #todo
-end
+  parseLterm()
 
-def parseLterm()
-  parseLfactor() #todo
-end
-
-#todo
-def parseLfactor()
-  if getTokenKind == Token::T_BOOLEAN # || getTokenKind == Token::T_FALSE
-    nextToken()
+  if getTokenKind == Token::T_AND
+    nextToken() #consume and
+    
+    parseLexpr()
   end
 end
+
+# <lterm> ::= not <lfactor>
+#          | <lfactor>
+def parseLterm()
+  
+  #accept the not keyword
+  if getTokenKind == Token::T_NOT
+    nextToken()
+  end
+  
+  parseLfactor()
+end
+
+# <lfactor>:= true
+#            | false
+# 	     | <relop>
+def parseLfactor()
+  if getTokenKind == Token::T_BOOLEAN
+    nextToken()
+  else    
+    parseRelOp()
+  end
+end
+
+# <relop> ::= <addop> <= <addop>
+#          | <addop> < <addop>
+#          | <addop> = <addop>
+def parseRelOp()
+  parseAddOp()
+  #now check if the next token is <=, < or =
+  check(Token::T_RELOP, "Expected a relational operator")
+  parseAddOp()
+end
+
 
 def parseIdentifier()
   check(Token::T_IDENT, "Invalid value for an identifier")
@@ -109,6 +125,9 @@ def parseMulOp()
   end  
 end
 
+# <factor> ::= integer
+# 	| identifier
+# 	| ( <addop> )
 def parseFactor()
   if getTokenKind == Token::T_INTEGER || getTokenKind == Token::T_IDENT
     nextToken()
@@ -132,7 +151,7 @@ def parse_error(message)
   raise ParseError, message
 end
 
-#check if the next token is same as the passed token
+#check if the next token is same as the passed token, if yes consume the token
 #if not an exception is raised with the provided message
 def check(token, message)
   if getTokenKind != token

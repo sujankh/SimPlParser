@@ -19,28 +19,3 @@ class Token
   T_BOOLEAN = 17
   T_AND = 18
 end
-
-$keywords = {
-  "eof" => Token::T_EOF,
-  ";" => Token::T_SEMICOLON,
-  "id" => Token::T_IDENT,
-  "=" => Token::T_RELOP,
-  "<" => Token::T_RELOP,
-  "<=" => Token::T_RELOP,
-  "if" => Token::T_IF,
-  "then" => Token::T_THEN,
-  "else" => Token::T_ELSE,
-  "while" => Token::T_WHILE,
-  "do" => Token::T_DO,
-  "end" => Token::T_END,
-  "+" => Token::T_ADDOP,
-  "-" => Token::T_ADDOP,
-  "*" => Token::T_MULOP,
-  "/" => Token::T_MULOP,
-  "int" => Token::T_INTEGER,
-  "(" => Token::T_LEFT_PAREN,
-  ")" =>Token::T_RIGHT_PAREN,
-  "true" => Token::T_BOOLEAN,
-  "false" => Token::T_BOOLEAN,
-  ":=" => Token::T_ASN
-}
