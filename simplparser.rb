@@ -17,9 +17,11 @@ def nextToken()
 end
 
 def parseProgram()
-  begin
-    $tokenizer.readFile("simpl1.txt")
-    nextToken()
+  inputFile = ARGV[0]
+  
+  begin    
+    $tokenizer.readFile(inputFile)
+    nextToken() #initialize the lexer to put the cursor to current token
     
     parseStatements()
 

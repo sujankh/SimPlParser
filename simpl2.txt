@@ -1,7 +1,8 @@
-prev := 0
-curr := +1;
-iter := -0;
-/ not a comment while N-- do
-tmp := prev (+ curr); prev = curr ;
-curr := ;
-end
+prev := 0;
+curr := 2 + 1;
+iter := 0;
+// not a comment
+while N <= 5 do
+tmp := prev * (1 + curr); prev := curr ;
+curr := x;
+end ;
