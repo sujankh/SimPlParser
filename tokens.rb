@@ -11,12 +11,12 @@ class Token
   T_END = 9
   T_ADDOP = 10
   T_MULOP = 11
-  T_ASN = 12
-  T_COMMENT = 13
+  T_ASN = 12 #Assign
+  T_NOT = 13
   T_INTEGER = 14
   T_LEFT_PAREN = 15
   T_RIGHT_PAREN = 16
-  T_BOOLEAN = 17
+  T_BOOLEAN = 17  
 end
 
 $keywords = {

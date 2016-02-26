@@ -8,22 +8,22 @@ require "test/unit"
 class TestParser < Test::Unit::TestCase
 
   def test_beginParse
-  lex("id = int ; id = int - int ; eof")
+  lex("id := int ; id := int - int ; eof")
   assert_nothing_raised(ParseError){parseStatements()}
   end
 
   def test_Assign1
-    lex("id = ( int + int )")
+    lex("id := ( int + int )")
     assert_nothing_raised(ParseError){parseAssignStatement()}
   end
 
   def test_Assign2
-    lex("id = int + int")
+    lex("id := int + int")
     assert_nothing_raised(ParseError){parseAssignStatement()}
   end
 
   def test_Assign3
-    lex("id = ( int + int")
+    lex("id := ( int + int")
     assert_raise(ParseError){parseAssignStatement()}
   end
 
@@ -85,10 +85,10 @@ class TestParser < Test::Unit::TestCase
   def test_if1
     lex(
       "if true then 
-         id = int ; 
-         id = int + int ; 
+         id := int ; 
+         id := int + int ; 
        else 
-         id = int - int ;
+         id := int - int ;
        end
        ")
     assert_nothing_raised(ParseError){parseIfStatement()}
@@ -98,12 +98,12 @@ class TestParser < Test::Unit::TestCase
     lex(
       "if true then
          if false then 
-           id = int ;
+           id := int ;
          else
-           id = int - int ;
+           id := int - int ;
          end ;
        else 
-         id = int - int ;
+         id := int - int ;
        end
        ")
     assert_nothing_raised(ParseError){parseIfStatement()}
@@ -114,12 +114,12 @@ class TestParser < Test::Unit::TestCase
     lex(
       "if true then
          if false then 
-           id = int ;
+           id := int ;
          else
-           id = int - int ;
+           id := int - int ;
          end ;
        else 
-         id = int - int ;
+         id := int - int ;
        end ; eof
        ")
     assert_nothing_raised(ParseError){parseStatements()}
@@ -128,20 +128,20 @@ class TestParser < Test::Unit::TestCase
   
   def test_parseStatements
     lex("
-id = int ;
-if false then id = int / int ; else id = int ; end ;
-id = id / id ;
+id := int ;
+if false then id := int / int ; else id := int ; end ;
+id := id / id ;
 eof
 ")
     assert_nothing_raised(ParseError){parseStatements()}
   end
 
-
+   #no semi colons
   def test_parseStatements1
     lex("
-id = int ;
-if false then id = int / int ; else id = int ; end ;
-id = id / id 
+id := int ;
+if false then id := int / int ; else id := int ; end ;
+id := id / id 
 eof
 ")
     assert_raise(ParseError){parseStatements()}

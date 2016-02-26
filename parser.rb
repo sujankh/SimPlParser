@@ -59,7 +59,7 @@ end
 
 def parseAssignStatement()
   parseIdentifier()
-  check(Token::T_EQUAL, "Identifier should be followed by a equals sign")
+  check(Token::T_ASN, "Identifier should be followed by a equals sign")
   parseAddOp()
 end
 
@@ -83,7 +83,7 @@ end
 
 #todo
 def parseLfactor()
-  if getTokenKind == Token::T_TRUE || getTokenKind == Token::T_FALSE
+  if getTokenKind == Token::T_BOOLEAN # || getTokenKind == Token::T_FALSE
     nextToken()
   end
 end
@@ -94,7 +94,7 @@ end
 
 def parseAddOp()
   parseMulOp()
-  if getTokenKind == Token::T_PLUS or getTokenKind == Token::T_MINUS
+  if getTokenKind == Token::T_ADDOP
     nextToken() #consume the token
     parseAddOp()
   end
@@ -103,7 +103,7 @@ end
 def parseMulOp()
   parseFactor()
 
-  if getTokenKind == Token::T_MULT or getTokenKind == Token::T_DIVIDE
+  if getTokenKind == Token::T_MULOP
     nextToken() #consume the * or / token
     parseMulOp()
   end  
@@ -121,6 +121,7 @@ def parseFactor()
   end
 end
 
+#Error Handling
 def parse_error_value(message)
   message = message + "\nUnexpected Value: " + "%s" % getTokenText()
 
@@ -130,7 +131,9 @@ end
 def parse_error(message)
   raise ParseError, message
 end
-  
+
+#check if the next token is same as the passed token
+#if not an exception is raised with the provided message
 def check(token, message)
   if getTokenKind != token
     parse_error_value(message)
