@@ -1,21 +1,6 @@
 #getTokenKind - returns symbol for next seqToken
-require './tokens.rb'
-require './parseError.rb'
-
-#peek at the next token
-def getTokenKind()
-  $tokens.at(0)
-end
-
-def getTokenText()
-  $tokens.at(0)
-end
-
-#consume token
-def nextToken()
-  $tokens.shift
-  #print $tokens
-end
+require_relative './tokens'
+require_relative './parseError'
 
 def parseProgram()
   begin
@@ -27,7 +12,6 @@ def parseProgram()
   rescue ParseError => e
     puts "Syntax error:"
     puts e.message
-    #puts e.backtrace.inspect
   end
 end
 

@@ -1,9 +1,26 @@
 #!/usr/bin/ruby
 
-require './parser.rb'
-require './dumblexer.rb'
-require './parseError.rb'
+require_relative '../parser'
+require_relative  './dumblexer'
+require_relative '../parseError'
 require "test/unit"
+
+#Dummy methods that the parser calls to get the tokens
+
+#peek at the next token
+def getTokenKind()
+  $tokens.at(0)
+end
+
+def getTokenText()
+  $tokens.at(0)
+end
+
+#consume token
+def nextToken()
+  $tokens.shift
+  #print $tokens
+end
 
 class TestParser < Test::Unit::TestCase
 
