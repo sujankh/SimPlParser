@@ -24,7 +24,7 @@ end
 
 class TestParser < Test::Unit::TestCase
 
-  def test_parseProgram
+  def test_correctProgram
     lex("
 id := int ;
 id := int ;
@@ -35,8 +35,7 @@ id := id + int ;
 id := id + id ;
 end ; eof
 ")
-
-    parseProgram()    
+    assert_nothing_raised(ParseError){parseStatements()}    
   end
 
   def test_invalidProgram

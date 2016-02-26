@@ -2,19 +2,6 @@
 require_relative './tokens'
 require_relative './parseError'
 
-def parseProgram()
-  begin
-    parseStatements()
-
-    nextToken() #consume EOF
-    puts "End Of File"
-    puts "Successful parse."
-  rescue ParseError => e
-    puts "Syntax error:"
-    puts e.message
-  end
-end
-
 # <stmts> ::= <stmt> ;
 # 	| <stmt> ; <stmts>
 
@@ -164,7 +151,7 @@ def parse_error(message)
   raise ParseError, message
 end
 
-#check if the next token is same as the passed token
+#check if the next token is same as the passed token, if yes consume the token
 #if not an exception is raised with the provided message
 def check(token, message)
   if getTokenKind != token
